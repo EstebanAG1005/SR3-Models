@@ -17,4 +17,4 @@ class Obj(object):
                 if prefix == 'v': #si encontre una v meto un nuevo valor
                     self.vertices.append(list(map(float, value.split(' '))))  #split de las cordenadas, asi salen separadas, y el float es porque se haran operaciones con el numero
                 elif prefix == 'f':
-                    self.faces.append([list(map(int , face.split('//'))) for face in value.split(' ')])  #para separar todos los / en un array y pasar a int tipo [2, 3, 4]
+                    self.faces.append([list(map(int , face.split('//'))) for face in value.split(' ')])
