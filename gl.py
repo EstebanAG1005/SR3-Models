@@ -24,7 +24,7 @@ def color(r, g, b):
     return bytes([b, g, r])
 
 
-class Render(object): # object es la clase a la que hereda
+class Render(object):
     def __init__(self):
         self.clear_color = color(0,0,0)
         self.draw_color = color(255,255,255)
