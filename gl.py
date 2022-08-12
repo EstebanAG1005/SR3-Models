@@ -25,72 +25,73 @@ def color(r, g, b):
 
 class Render(object):
     def __init__(self):
-        self.clear_color = color(0,0,0)
-        self.draw_color = color(255,255,255)
+        self.background = color(0,0,0)
+        self.figura = color(255,255,255)
         
-    
     def glInit(self):
         pass
     
     def glClear(self):
         self.framebuffer = [
-            [self.clear_color for x in range(self.width)]
+            [self.background for x in range(self.width)]
             for y in range(self.height)
         ]
 
     def glCreateWindow(self, width, height): 
         self.width = width
         self.height = height
-        self.framebuffer = []
         self.glClear()
     
     def point(self, x,y):
-        self.framebuffer[y][x] = self.draw_color
+        try:
+            self.framebuffer[y][x] = self.figura
+        except:
+            pass
 
     def glViewPort(self, x, y, width, height):
-        self.x_VP = x
-        self.y_VP = y
-        self.width_VP = width
-        self.height_VP = height
+        self.posXV = x
+        self.posYV = y
+        self.viewpWidth = width
+        self.viewpHeight = height
 
     def glClearColor(self, r, g, b):
-        self.clear_color = color(int(round(r*255)),int(round(g*255)),int(round(b*255)))
+        self.background = color(int(round(r*255)),int(round(g*255)),int(round(b*255)))
 
     def glColor(self, r,g,b):
-        self.draw_color = color(int(round(r*255)),int(round(g*255)),int(round(b*255)))
+        self.figura = color(int(round(r*255)),int(round(g*255)),int(round(b*255)))
 
     def glVertex(self, x, y):
-        xPixel = round((x+1)*(self.width_VP/2)+self.x_VP)
-        yPixel = round((y+1)*(self.height_VP/2)+self.y_VP)
-        self.point(xPixel, yPixel)
+        CordX = round((x+1)*(self.viewpWidth/2)+self.posXV)
+        CordY = round((y+1)*(self.viewpHeight/2)+self.posYV)
+        self.point(CordX, CordY)
     
-    def glLine(self,x1, y1, x2, y2):
+    def glLine(self,x0, y0, x1, y1):
+        x0 = int(round((x0+1) * self.width / 2))
+        y0 = int(round((y0+1) * self.height / 2))
         x1 = int(round((x1+1) * self.width / 2))
         y1 = int(round((y1+1) * self.height / 2))
-        x2 = int(round((x2+1) * self.width / 2))
-        y2 = int(round((y2+1) * self.height / 2))
-        steep=abs(y2 - y1)>abs(x2 - x1)
+        steep=abs(y1 - y0)>abs(x1 - x0)
         if steep:
+            x0, y0 = y0, x0
             x1, y1 = y1, x1
-            x2, y2 = y2, x2
-        if x1>x2:
-            x1,x2 = x2,x1
-            y1,y2 = y2,y1
+        if x0>x1:
+            x0,x1 = x1,x0
+            y0,y1 = y1,y0
 
-        dy = abs(y2 - y1)
-        dx = abs(x2 - x1)
-        y = y1
+        dy = abs(y1 - y0)
+        dx = abs(x1 - x0)
+        y = y0
         offset = 0
         threshold = dx
 
-        for x in range(x1, x2):
+        for x in range(x0, x1):
             if offset>=threshold:
-                y += 1 if y1 < y2 else -1
+                y += 1 if y0 < y1 else -1
                 threshold += 2*dx
             if steep:
-                self.framebuffer[y][x] = self.draw_color
+                self.point(x, y)
             else:
-                self.framebuffer[x][y] = self.draw_color
+                self.point(y, x)
             offset += 2*dy
 
     def load(self, filename, translate, scale):
@@ -106,16 +107,17 @@ class Render(object):
                 v1 = model.vertices[f1 - 1]
                 v2 = model.vertices[f2 - 1]
                 
-                x1 = round((v1[0] + translate[0]) * scale[0])
-                y1 = round((v1[1] + translate[1]) * scale[1])
-                x2 = round((v2[0] + translate[0]) * scale[0])
-                y2 = round((v2[1] + translate[1]) * scale[1])
+                x0 = round((v1[0] + translate[0]) * scale[0])
+                y0 = round((v1[1] + translate[1]) * scale[1])
+                x1 = round((v2[0] + translate[0]) * scale[0])
+                y1 = round((v2[1] + translate[1]) * scale[1])
 
+                x0 = ((2*x0)/self.width)-1
+                y0 = ((2*y0)/self.height)-1
                 x1 = ((2*x1)/self.width)-1
                 y1 = ((2*y1)/self.height)-1
-                x2 = ((2*x2)/self.width)-1
-                y2 = ((2*y2)/self.height)-1
-                self.glLine(x1, y1, x2, y2)
+
+                self.glLine(x0, y0, x1, y1)
 
     def glFinish(self, filename):
         f = open(filename, 'bw')

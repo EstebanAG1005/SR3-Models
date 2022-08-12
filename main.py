@@ -16,4 +16,5 @@ r.glCreateWindow(width, height)
 
 # Se carga el obj
 r.load('coffe.obj', translate=(0.85, 0.5), scale=(600, 600))
-r.glFinish('sr3_3.bmp')
+r.glFinish('coffe.bmp')
+
