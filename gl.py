@@ -1,10 +1,9 @@
-# SR2 Lines
+# SR3 Models
 # Graficas por computadora 
 # Esteban Aldana Guerra 20591
 
 import struct
 from obj import Obj
-
 
 # 1 byte
 def char(c):
@@ -28,6 +27,10 @@ class Render(object):
     def __init__(self):
         self.clear_color = color(0,0,0)
         self.draw_color = color(255,255,255)
+        
+    
+    def glInit(self):
+        pass
     
     def glClear(self):
         self.framebuffer = [
@@ -43,9 +46,6 @@ class Render(object):
     
     def point(self, x,y):
         self.framebuffer[y][x] = self.draw_color
-
-    def glInit(self):
-        pass
 
     def glViewPort(self, x, y, width, height):
         self.x_VP = x
@@ -148,23 +148,3 @@ class Render(object):
                 f.write(self.framebuffer[y][x])
         
         f.close()
-    
-    def glFill(self, polygon):
-        for y in range(self.height):
-            for x in range(self.width):
-                i = 0
-                j = len(polygon) - 1
-                inside = False
-                for i in range(len(polygon)):
-                    if (polygon[i][1] < y and polygon[j][1] >= y) or (polygon[j][1] < y and polygon[i][1] >= y):
-                        if polygon[i][0] + (y - polygon[i][1]) / (polygon[j][1] - polygon[i][1]) * (polygon[j][0] - polygon[i][0]) < x:
-                            inside = not inside
-                    j = i
-                if inside:
-                    self.point(y,x)
-
-
-r = Render()
-r.glCreateWindow(1024,1024)
-r.load('coffe.obj', (0.85, 0.5), (600, 600))
-r.glFinish('sr3_3.bmp')
