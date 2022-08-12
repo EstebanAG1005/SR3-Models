@@ -88,9 +88,9 @@ class Render(object): # object es la clase a la que hereda
                 y += 1 if y1 < y2 else -1
                 threshold += 2*dx
             if steep:
-                self.framebuffer[x][y] = self.draw_color
-            else:
                 self.framebuffer[y][x] = self.draw_color
+            else:
+                self.framebuffer[x][y] = self.draw_color
             offset += 2*dy
 
     def load(self, filename, translate, scale):
@@ -165,6 +165,6 @@ class Render(object): # object es la clase a la que hereda
 
 
 r = Render()
-r.glCreateWindow(800,800)
-r.load('coffe.obj', (4, 3), (100, 100))
+r.glCreateWindow(1024,1024)
+r.load('coffe.obj', (0.85, 0.5), (600, 600))
 r.glFinish('sr3_3.bmp')
