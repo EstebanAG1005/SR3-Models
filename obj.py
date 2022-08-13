@@ -1,3 +1,7 @@
+# SR3 Models
+# Graficas por computadora 
+# Esteban Aldana Guerra 20591
+
 class Obj(object):
     def __init__(self, filename):
         with open(filename) as f:
